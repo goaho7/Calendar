@@ -3,61 +3,18 @@
 
   <div class="row justify-content-center">
     <div class="col-md-8 p-5">
+      <h1>Тренировка</h1>
       <div class="card">
         <div class="card-header">
             Сегодня: {{ data }}
         </div>
-        {% load user_filters %}
-        {% include 'includes/error.html' %}
         <div class="card-body">
-          <form method="post" class="form-horizontal" name="ourForm" action="{% url 'oneapp:index' %}">
-            {% csrf_token %}
-            <div class="form-group">
-              {% for field in day_form %}
-                {% if field.name == 'pub_date' %}
-                  {{field.label }}
-                  <input type="date" class="" name="Date" id="davaToday">
-                {% else %}
-                  {{field.label }}
-                  {{field}}
-                {% endif %}  
-              {% endfor %}
-              <hr> 
-                <div class="exercise">
-                  <h5>Упражнение</h5>
-                  <br>
-                  <div class="name-exercise input-group row">
-                    {% for field in exercise_form %}
-                      <div class="form-group col-md-5">
-                        <label for="{{ field.id_for_label }}" class="form-label">
-                          {{ field.label }}
-                        </label>
-                        {{ field|addclass:'form-select' }}
-                      </div>  
-                    {% endfor %}
-                  </div>  
-                  <br>
-                  <div class="sets">
-                    <div class="set">
-                      {{ set_form.as_table }}
-                      <input type="button" title="Background Image" class="del_set btn btn-success"/>
-                    </div>
-                  </div>
-                  <input type="button" title="Background Image" class="add_set btn btn-success" value="Добавить подход"/>
-                </div>
-              <hr>
-              <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary">
-                  Сохранить 
-                </button>
-              </div>
-            </div>  
-          </form>
+          {% include 'includes/form.html' %} 
         </div>
       </div>
     </div>
   </div> 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
   <script src='static/js/main.js'> </script>
-  <script>document.getElementById('davaToday').valueAsDate = new Date();</script>
+  {% comment %} <script>document.getElementById('davaToday').valueAsDate = new Date();</script> {% endcomment %}
 {% endblock %}

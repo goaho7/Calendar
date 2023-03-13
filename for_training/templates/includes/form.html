@@ -1,39 +1,87 @@
-{% load user_filters %}
-<form method="post" class="form-horizontal" name="ourForm" action="{% url 'oneapp:index' %}">
+
+{% comment %} <form method="post" class="form-horizontal" name="ourForm" action="{% url 'oneapp:index' %}">
   {% csrf_token %}
   <div class="form-group">
-    {% for field in day_form %}
-      {% if field.name == 'pub_date' %}
-        {{field.label }}
-        <input type="date" class="" name="Date" id="davaToday">
-      {% else %}
-        {{field.label }}
-        {{field}}
-      {% endif %}  
-    {% endfor %}
-    <hr> 
-      <div class="exercise">
-        <h5>Упражнение</h5>
-        <br>
-        <div class="name-exercise input-group row">
-          {% for field in exercise_form %}
-            <div class="form-group col-md-5">
+    <div class="day row">
+      
+        {% for field in day_form %}
+          {% if field.name == 'pub_date' %}
+            <div class="form-group col-md-3">
               <label for="{{ field.id_for_label }}" class="form-label">
                 {{ field.label }}
               </label>
-              {{ field|addclass:'form-select' }}
+              <input type="date" class="form-control" name="Date" id="davaToday">
             </div>  
-          {% endfor %}
-        </div>  
-        <br>
-        <div class="sets">
-          <div class="set">
-            {{ set_form.as_table }}
-            <input type="button" title="Background Image" class="del_set btn btn-success"/>
+          {% else %}
+            <div class="form-group col-md-2">
+              <label for="{{ field.id_for_label }}" class="form-label">
+                {{ field.label }}
+              </label>
+              {{field|addclass:'form-control'}}
+            </div> 
+          {% endif %}  
+        {% endfor %}
+         
+    </div>   
+    <hr> 
+      <div class="exercises row" id="exercises">
+        <h5>Упражнения</h5>
+        
+
+        <div class="input-group row justify-content-end">
+          <div class="header-exercises form-group col-md-5">
+            Мышечная группа
+          </div> 
+          <div class="header-exercises form-group col-md-6">
+            Упражнение
+          </div> 
+        </div> 
+        <div class="exercise" id="exercise">
+          <div class="name-exercise input-group row">
+            {% for field in exercise_form %}
+              {% if field.name == 'exercise_number' %}
+                <div class="exercise-number form-group col-md-1">
+                  {{ field.value }}
+                </div>
+              {% elif field.name == 'name_exercise' %}
+                <div class="form-group col-md-6">
+                  {{ field|addclass:'form-select' }}
+                </div> 
+              {% else %}
+                <div class="form-group col-md-5">
+                  {{ field|addclass:'form-select' }}
+                </div>  
+              {% endif %}
+            {% endfor %}
+          </div> 
+  
+          <h6>Подходы</h6>
+          <div class="sets">
+            <div class="input-group row">
+              <div class="form-group col-md-4">
+                Вес
+              </div> 
+              <div class="form-group col-md-4">
+                Повторения
+              </div> 
+            </div>  
+            <div class="set input-group row">
+              {% for field in set_form %}
+                <div class="form-group col-md-4">
+                  {{ field|addclass:'form-control form-control-sm' }}
+                </div>  
+              {% endfor %}
+              <div class="form-group col-md-1">
+                <input type="button" title="удалить подход" class="del_set btn btn-sm btn-success"/>
+              </div>
+            </div>
           </div>
+          <input type="button" title="добавить подход" class="add_set btn btn-sm btn-success col-md-3" value="Добавить подход"/>
+          <hr>
         </div>
-        <input type="button" title="Background Image" class="add_set btn btn-success" value="Добавить подход"/>
       </div>
+      <input type="button" id="add-exercise" title="добавить упражнение" class="btn btn-success col-md-3" value="Добавить упражнение"/>
+
     <hr>
     <div class="d-flex justify-content-end">
       <button type="submit" class="btn btn-primary">
@@ -41,4 +89,82 @@
       </button>
     </div>
   </div>  
+</form> {% endcomment %}
+
+
+
+
+{% comment %} <form method="post" class="form-horizontal" name="ourForm" action="{% url 'oneapp:index' %}">
+  {% csrf_token %}
+  {{ exercise_formset.management_form }}
+
+  <div class="exercises row" id="exercises">
+    <h5>Упражнения</h5>
+    
+
+    <div class="input-group row justify-content-end">
+      <div class="header-exercises form-group col-md-5">
+        Мышечная группа
+      </div> 
+      <div class="header-exercises form-group col-md-6">
+        Упражнение
+      </div> 
+    </div> 
+    
+    <div class="exercise" id="exercise">
+      {% for exercise in exercise_formset %}
+        <div class="name-exercise input-group row">
+          <div class="exercise-number form-group col-md-1">
+            {{ forloop.counter }}
+          </div>
+          {% for field in exercise %} 
+            {% if field.name == 'name_exercise' %}
+              <div class="form-group col-md-6">
+                {{ field|addclass:'form-select' }}
+              </div> 
+            {% else %}
+              <div class="form-group col-md-5">
+                {{ field|addclass:'form-select' }}
+              </div>  
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div>
+          Подходы
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <input type="button" id="add-exercise" title="добавить упражнение" class="btn btn-success col-md-3" value="Добавить упражнение"/>
+  <input type="submit" value="Submit">
+</form> {% endcomment %}
+
+
+
+
+<form id="form-container" method="post" action="{% url 'oneapp:index' %}">
+  {% csrf_token %}
+  {{exercise_formset.management_form}}
+  {% comment %} {% for form in exercise_formset %}
+    <div class="exercise-form">
+      {{form.as_p}}
+    </div>
+  {% endfor %} {% endcomment %}
+  {% for form in exercise_formset.forms %}
+    <div class="exercise-form">
+      {{form.as_p}}
+      {% if form.nested %}
+        {{ form.nested.management_form }}
+        {{ form.nested.non_form_errors }}
+ 
+        {% for nested_form in form.nested.forms %}
+            {{ nested_form }}
+        {% endfor %}
+      {% endif %}
+    </div>
+    
+
+  {% endfor %}
+  <button id="add-exercise" type="submit">Create exercise</button>
+  <button type="submit">Сохранить</button>
 </form>

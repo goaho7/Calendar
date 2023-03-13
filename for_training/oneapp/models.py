@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from datetime import datetime
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 User = get_user_model()
 def default_datetime(): return datetime.now().date
@@ -46,7 +47,9 @@ class Day(models.Model):
         default=80.5,
         verbose_name='Вес тела',
         blank=True,
-        null=True,)
+        null=True,
+        validators=[MinValueValidator(20), MaxValueValidator(300)]
+    )
 
 
 class Exercise(models.Model):
@@ -74,16 +77,35 @@ class Exercise(models.Model):
         'Комментарий',
         help_text='Оставьте комментарий',
         blank=True,
-        null=True,)
+        null=True,
+    )
+
+    exercise_number = models.SmallIntegerField(
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(15)]
+    )
 
 
 class Set(models.Model):
-    weight = models.FloatField(default=0, verbose_name='Вес снаряда',)
-    reps = models.IntegerField(default=8, verbose_name='Количество повторений')
+    set_number = models.SmallIntegerField(
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(15)]
+    )
+
+    weight = models.FloatField(
+        default=0,
+        verbose_name='Вес снаряда',
+        validators=[MinValueValidator(0), MaxValueValidator(700)]
+    )
+    reps = models.IntegerField(
+        default=8,
+        verbose_name='Количество повторений',
+        validators=[MinValueValidator(1), MaxValueValidator(100)]
+    )
 
     exercise = models.ForeignKey(
         Exercise,
         on_delete=models.CASCADE,
         related_name='sets',
-        verbose_name='Упражнение'
+        verbose_name='Упражнение',
     )
