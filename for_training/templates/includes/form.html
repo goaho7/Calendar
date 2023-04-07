@@ -144,27 +144,19 @@
 
 <form id="form-container" method="post" action="{% url 'oneapp:index' %}">
   {% csrf_token %}
-  {{exercise_formset.management_form}}
-  {% comment %} {% for form in exercise_formset %}
-    <div class="exercise-form">
-      {{form.as_p}}
-    </div>
-  {% endfor %} {% endcomment %}
-  {% for form in exercise_formset.forms %}
-    <div class="exercise-form">
-      {{form.as_p}}
-      {% if form.nested %}
-        {{ form.nested.management_form }}
-        {{ form.nested.non_form_errors }}
- 
-        {% for nested_form in form.nested.forms %}
-            {{ nested_form }}
-        {% endfor %}
-      {% endif %}
-    </div>
-    
 
+  {{ dayform }}
+
+  {{ exerciseformset.management_form }}
+  {% for form in exerciseformset.forms %}
+    <div class="exercise-form">
+      {{form.as_p}}
+        {{ form.sets.management_form }}
+        {% for nested_form in form.sets.forms %}
+            {{ nested_form.as_div }}
+        {% endfor %}
+    </div>
   {% endfor %}
-  <button id="add-exercise" type="submit">Create exercise</button>
-  <button type="submit">Сохранить</button>
+  <button class="btn btn-sm btn-secondary" id="add-exercise" type="submit">Добавить упражнение</button>
+  <button class="btn btn-success" type="submit">Сохранить</button>
 </form>

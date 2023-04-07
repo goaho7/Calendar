@@ -18,7 +18,6 @@ class Group(models.Model):
 class NameExercise(models.Model):
     title = models.CharField(max_length=200, verbose_name='Упражнение')
     slug = models.SlugField(unique=True)
-    is_present = models.BooleanField(default=False)
 
     group = models.ForeignKey(
         Group,
@@ -44,12 +43,19 @@ class Day(models.Model):
         verbose_name='Дата тренировки')
 
     weight_body = models.FloatField(
-        default=80.5,
         verbose_name='Вес тела',
         blank=True,
         null=True,
-        validators=[MinValueValidator(20), MaxValueValidator(300)]
+        validators=[MinValueValidator(20), MaxValueValidator(500)]
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'pub_date'],
+                name='unique_author_pub_date'
+            )
+        ]
 
 
 class Exercise(models.Model):
@@ -80,27 +86,18 @@ class Exercise(models.Model):
         null=True,
     )
 
-    exercise_number = models.SmallIntegerField(
-        default=1,
-        validators=[MinValueValidator(1), MaxValueValidator(15)]
-    )
-
 
 class Set(models.Model):
-    set_number = models.SmallIntegerField(
-        default=1,
-        validators=[MinValueValidator(1), MaxValueValidator(15)]
-    )
 
     weight = models.FloatField(
         default=0,
         verbose_name='Вес снаряда',
-        validators=[MinValueValidator(0), MaxValueValidator(700)]
+        validators=[MinValueValidator(0), MaxValueValidator(1000)]
     )
     reps = models.IntegerField(
-        default=8,
+        default=0,
         verbose_name='Количество повторений',
-        validators=[MinValueValidator(1), MaxValueValidator(100)]
+        validators=[MinValueValidator(1), MaxValueValidator(1000)]
     )
 
     exercise = models.ForeignKey(
